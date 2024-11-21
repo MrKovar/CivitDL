@@ -1,0 +1,4 @@
+.env
+
+# In case the cookies.txt is in the project directory
+cookies.txt
