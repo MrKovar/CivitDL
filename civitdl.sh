@@ -13,7 +13,6 @@ function run_civitaidl {
     if [ $has_python3 = "python3 not found" ]; then
         echo "Python3 not found, trying python"
         python_name='python'
-    fi
     elif [ $has_python = "python not found" ]; then
         echo "Python must be installed to run CivitAIDL"
         return 1
