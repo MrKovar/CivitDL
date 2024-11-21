@@ -1,44 +1,15 @@
-from enum import Enum
 from typing import List
 from abc import ABC, abstractmethod
+import re
 
-
-class ModelTypes(Enum):
-    CHECKPOINT = 0
-    TEXTUALINVERSION = 1
-    HYPERNETWORK = 2
-    AESTHETICGRADIENT = 3
-    LORA = 4
-    CONTROLNET = 5
-    POSES = 6
-
-
-class ModelFormats(Enum):
-    SAFETENSOR = 0
-    PICKLETENSOR = 1
-    OTHER = 2
+# TODO: 
+# 1. Add PickleTensor Support
+# 2. Add ability to select file if multiple files are available
+# 3. Add ability to add file name prefix for tags/nsfw flags (e.g. "FLUX__NSFW-ModelName.safetensors")
 
 
 class CivitAIModel(ABC):
-    invalid_chars = [
-        ":",
-        ",",
-        "(",
-        ")",
-        "/",
-        "\\",
-        "|",
-        "[",
-        "]",
-        "{",
-        "}",
-        "<",
-        ">",
-        "?",
-        "*",
-        '"',
-        "'",
-    ]
+    invalid_regex = re.compile(r"[^a-zA-Z0-9\s\.\-_]")
 
     @abstractmethod
     def get_file_name(self) -> str:
@@ -46,8 +17,7 @@ class CivitAIModel(ABC):
 
     def replace_special_chars(self, name: str) -> str:
         formatted_name = name
-        for char in self.invalid_chars:
-            formatted_name = name.replace(char, "")
+        formatted_name = self.invalid_regex.sub("", formatted_name)
         formatted_name = "".join(formatted_name.split())
         return formatted_name
 
@@ -58,12 +28,12 @@ class ModelVersionsFiles:
         self,
         id: int,
         sizeKB: int,
-        type: ModelTypes,
+        type: str,
         **_,
     ):
         self.id = id
         self.size_in_kb = sizeKB
-        self.type = type
+        self.type = type.upper()
 
     def __repr__(self):
         return (
@@ -103,15 +73,15 @@ class CivitAIModelResponse(CivitAIModel):
         self,
         id: int,
         name: str,
-        type: ModelTypes,
+        type: str,
         modelVersions: List[ModelVersions],
         **_,
     ):
         self.id = id
         self.name = name
-        self.model_type = type
+        self.model_type = type.upper()
         self.model_versions = modelVersions
-        self.base_model = self.model_versions[0].base_model
+        self.base_model = "".join(self.model_versions[0].base_model.split())
         self.download_id = self.model_versions[0].id
 
     def get_file_name(self) -> str:
@@ -135,11 +105,11 @@ class CivitAIModelVersionResponse(CivitAIModel):
         def __init__(
             self,
             name: str,
-            type: ModelTypes,
+            type: str,
             **_,
         ):
             self.name = name
-            self.model_type = type
+            self.model_type = type.upper()
 
         def __repr__(self):
             return (
@@ -159,7 +129,7 @@ class CivitAIModelVersionResponse(CivitAIModel):
         self.id = id
         self.model_id = modelId
         self.name = name
-        self.base_model = baseModel.upper()
+        self.base_model = "".join(baseModel.upper().split())
         self.model = model
         self.model_type = model.model_type
         self.model_files = files

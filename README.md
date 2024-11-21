@@ -6,16 +6,18 @@ Download all your AI needs from CivitAI to the directory you need it with a sing
 
 ## Quick Start
 
-Assuming you have Python installed, set the variables in `.env` file and run the following command:
+Assuming you have Python installed, set the download path variables in `.env` file and run the following command:
 
 `
 . ./civitaidl.sh "<civitai_model_url>"`
 
 The script will create a virtual Python environment, download Python dependencies, and run the script to download the model to the directory you specify based on the model metadata. That's it! Run the same command with a different URL to download any other model.
 
+NOTE: If you are wondering where the variable for "embeddings" is stored, its in the TEXTUALINVERSIONS_DIR variable in the `.env` file. They are the same thing. Two words for the same thing. You are not a dingus. It is confusing and its okay to be confused😊
+
 ## Cookies
 
-Some models are restricted to users who are logged in. If you have an account, download your cookies from your browser manually using dev tools or with a tool like [Cookie Editor](https://cookie-editor.com/) and refernce the saved cookie file in the `.env` file. The script will automatically use the cookies to download the model and update them per request. 
+Some models are restricted to users who are logged in. If you have an account, download your cookies from your browser manually using dev tools or with a tool like [Cookie Editor](https://cookie-editor.com/) and refernce the saved cookie file in the `.env` file. The script will automatically use the cookies to download the model and update them per request.
 
 ### Prerequisites
 
